@@ -1,0 +1,9 @@
+.vs
+Binaries
+Content/StarterContent
+Intermediate
+DerivedDataCache
+Saved
+*.suo
+*.sdf
+
