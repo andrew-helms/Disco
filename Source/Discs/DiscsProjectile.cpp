@@ -5,16 +5,8 @@
 
 ADiscsProjectile::ADiscsProjectile() 
 {
-	/*// Use a sphere as a simple collision representation
-	CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
-	CollisionComp->InitSphereRadius(5.0f);
-	CollisionComp->BodyInstance.SetCollisionProfileName("Projectile");
-	CollisionComp->OnComponentHit.AddDynamic(this, &ADiscsProjectile::OnHit);		// set up a notification for when this component hits something blocking
-
-	// Players can't walk on it
-	CollisionComp->SetWalkableSlopeOverride(FWalkableSlopeOverride(WalkableSlope_Unwalkable, 0.f));
-	CollisionComp->CanCharacterStepUpOn = ECB_No;
-	CollisionComp->*/
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DiscMesh"));
 	Mesh->AttachTo(RootComponent);
@@ -43,6 +35,23 @@ ADiscsProjectile::ADiscsProjectile()
 	InitialLifeSpan = 300.0f;
 }
 
+void ADiscsProjectile::Tick(float DeltaTime)
+{
+	float drag_scale = 0.995;
+	FVector velocity = this->GetVelocity();
+	velocity.X *= drag_scale;
+	velocity.Y *= drag_scale;
+	velocity.Z *= 0.97;
+	ProjectileMovement->Velocity = velocity;
+	float gravity_scale = 1;
+	float speed = sqrt(velocity.X * velocity.X + velocity.Y * velocity.Y + velocity.Z * velocity.Z);
+	gravity_scale -= (speed / 3000.0);
+	if (gravity_scale < 0)
+	{
+		gravity_scale = 0;
+	}
+	ProjectileMovement->ProjectileGravityScale = gravity_scale;
+}
 
 void ADiscsProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {

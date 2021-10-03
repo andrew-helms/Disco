@@ -29,6 +29,8 @@ public:
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+	void Tick(float DeltaTime);
+
 	/** Returns CollisionComp subobject **/
 	FORCEINLINE class UStaticMeshComponent* GetCollisionComp() const { return Mesh; }
 	/** Returns ProjectileMovement subobject **/
